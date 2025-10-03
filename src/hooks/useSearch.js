@@ -62,5 +62,55 @@ export default function useSearch() {
     }
   };
 
-  return { loading, data, searchInMetaverse };
+  const searchByType = async (query, type, page) => {
+    setLoading(true);
+
+    try {
+      let response;
+      switch (type) {
+        case "characters":
+          response = await searchCharacters(query, page);
+          if (response.status) {
+            setData((prev) => ({
+              ...prev,
+              characters: [...data.characters, ...response.data],
+              charactersInfo: response.info,
+            }));
+          }
+          break;
+
+        case "locations":
+          response = await searchLocation(query, page);
+          if (response.status) {
+            setData((prev) => ({
+              ...prev,
+              locations: response.data,
+              locationsInfo: response.info,
+            }));
+          }
+          break;
+
+        case "episodes":
+          response = await searchEpisodes(query, page);
+          if (response.status) {
+            setData((prev) => ({
+              ...prev,
+              episodes: response.data,
+              episodesInfo: response.info,
+            }));
+          }
+          break;
+
+        default:
+          errorMessage("Invalid search type provided.");
+      }
+    } catch (err) {
+      errorMessage(err.message || "Something went wrong while searching.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return { loading, data, searchInMetaverse,searchByType };
 }

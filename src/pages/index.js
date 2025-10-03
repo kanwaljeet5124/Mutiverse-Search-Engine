@@ -1,13 +1,11 @@
-import Image from "next/image";
 import { Bebas_Neue, Nunito } from "next/font/google";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Banner from "@/modules/Banner";
-import CharacterSection from "@/modules/CharacterSection";
-import { useRouter } from "next/router";
-import useSearch from "@/hooks/useSearch";
 import CharacterCard from "@/modules/CharacterCard";
 import LocationCard from "@/modules/LocationCard";
 import EpisodeCard from "@/modules/EpisodeCard";
+import { useRouter } from "next/router";
+import useSearch from "@/hooks/useSearch";
 
 const bebas = Bebas_Neue({
   variable: "--font-bebas-neue",
@@ -21,127 +19,169 @@ const nunito = Nunito({
 });
 
 export default function Home() {
-  const router = useRouter();
-  const {loading, data, searchInMetaverse} = useSearch();
-  let tab = router.query.tab || "characters";
+    const router = useRouter();
+    const { loading, data, searchByType } = useSearch();
 
-  const handleSearch = async (query) => {
-    if(query.trim().length === 0) {
+    const tab = useMemo(() => router.query.tab || "characters", [router.query.tab]);
+
+    const handleSearch = async (query, type,page=1) => {
+        if (!query || query.trim().length === 0) {
         router.push(`/`, undefined, { scroll: false });
         return;
+        }
+        await searchByType(query, type, page);
+    };
+
+    const getPageFromUrl = (url) => {
+        if (!url) return null;
+        const params = new URL(url).searchParams;
+        return params.get("page");
+    };
+
+    const handleCharacterLoadMore = async () => {
+        if (!data.charactersInfo?.next) return;
+        const nextPage = getPageFromUrl(data.charactersInfo.next);
+        console.log("Next page:", nextPage);
+        handleSearch(router.query.keyword, "characters", nextPage); 
     }
-    await searchInMetaverse(query);
-  }
-
-
-  useEffect(() => {
-    if (router.isReady && router.query.keyword) {
-      handleSearch(router.query.keyword);
+    const handleLocationsLoadMore = async () => {
+        if (!data.charactersInfo?.next) return;
+        const nextPage = getPageFromUrl(data.locationsInfo.next);
+        console.log("Next page:", nextPage);
+        handleSearch(router.query.keyword, "locations", nextPage); 
     }
-  }, [router.isReady, router.query.keyword]); 
+    const handleEpisodesLoadMore = async () => {
+        if (!data.charactersInfo?.next) return;
+        const nextPage = getPageFromUrl(data.episodesInfo.next);
+        console.log("Next page:", nextPage);
+        handleSearch(router.query.keyword, "episodes", nextPage); 
+    }   
 
-  useEffect(() => {
-    if (router.isReady) {
-      tab = router.query.tab || "characters";
-    }
-  }, [router.isReady, router.query.tab]);
+    useEffect(() => {
+        if (router.isReady && router.query.keyword) {
+            handleSearch(router.query.keyword, tab);
+        }
+    }, [router.isReady, router.query.keyword, tab]);
 
-  console.log(data);
-
+    console.log(data)
   return (
-    <div
-      className={`${bebas.variable} ${nunito.variable} font-nunito flex flex-wrap`}
-    >
+    <div className={`${bebas.variable} ${nunito.variable} font-nunito flex flex-wrap`}>
       <Banner />
+
+      {/* Tabs */}
       <div className="wrapper flex flex-wrap items-center justify-center">
         <div className="w-full transition-all duration-200 ease-linear md:w-auto mt-8 flex flex-wrap items-center justify-center rounded-full gap-2 p-2 border border-gray-300 overflow-clip">
-          <label 
-            className={`py-2.5 px-5 cursor-pointer rounded-full border-r border-white ${tab=="characters"?"bg-blue-400 text-white font-bold":"text-blue-400 font-semibold bg-gray-100"}`}
-            onClick={() =>
-              router.push(
-                {
-                  pathname: router.pathname,
-                  query: { ...router.query, tab: "characters" },
-                },
-                undefined,
-                { scroll: false }
-              )
-            }    
-          >
-            Characters
-          </label>
-          <label 
-            className={`py-2.5 px-5 cursor-pointer rounded-full border-r border-white ${tab=="locations"?"bg-blue-400 text-white font-bold":"text-blue-400 font-semibold bg-gray-100"}`} 
-            onClick={() =>
-              router.push(
-                {
-                  pathname: router.pathname,
-                  query: { ...router.query, tab: "locations" },
-                },
-                undefined,
-                { scroll: false }
-              )
-            }
-          >
-            Locations
-          </label>
-          <label 
-            className={`py-2.5 px-5 cursor-pointer rounded-full border-r border-white ${tab=="episodes"?"bg-blue-400 text-white font-bold":"text-blue-400 font-semibold bg-gray-100"}`}
-            onClick={() =>
-              router.push(
-                {
-                  pathname: router.pathname,
-                  query: { ...router.query, tab: "episodes" },
-                },
-                undefined,
-                { scroll: false }
-              )
-            }
-          >
-            Episodes
-          </label>
+          {["characters", "locations", "episodes"].map((type) => (
+            <label
+              key={type}
+              className={`py-2.5 px-5 cursor-pointer rounded-full border-r border-white ${
+                tab === type
+                  ? "bg-blue-400 text-white font-bold"
+                  : "text-blue-400 font-semibold bg-gray-100"
+              }`}
+              onClick={() =>
+                router.push(
+                  {
+                    pathname: router.pathname,
+                    query: { ...router.query, tab: type },
+                  },
+                  undefined,
+                  { scroll: false }
+                )
+              }
+            >
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </label>
+          ))}
         </div>
       </div>
 
-      {tab && tab == "characters" && <div className='wrapper flex flex-wrap flex-col items-center justify-center'>
-        <div className='w-full flex flex-wrap items-center justify-center'>
-            <span className='w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize'>Showing {data.characters.length} out of {data.charactersInfo?.count} characters</span>
-            {data?.characters?.length>0 ? <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-6'>
-                {data?.characters?.map((item, index) => <CharacterCard key={index} data={item} />)}
-            </div>: <div className="flex flex-col items-center justify-center">
+      {/* Characters */}
+      {tab === "characters" && (
+        <div className="wrapper flex flex-wrap flex-col items-center justify-center">
+          <div className="w-full flex flex-wrap items-center justify-center">
+            <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
+              Showing {data.characters.length} out of {data.charactersInfo?.count} characters
+            </span>
+            {data?.characters?.length > 0 ? (<>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {data?.characters?.map((item, index) => (
+                    <CharacterCard key={index} data={item} />
+                ))}
+              </div>
+              <div className="">
+                {data?.charactersInfo?.next && <button disabled={loading} onClick={handleCharacterLoadMore} className=' mt-10 disabled:cursor-not-allowed disabled:bg-blue-300 rounded-full px-7 bg-blue-400 text-white py-3 text-lg font-nunito cursor-pointer hover:bg-blue-500 transition-all duration-200 ease-in-out'>
+                    {!loading?"Load More":"Loading..."}
+                </button>}
+              </div>
+            </>) : (
+              <div className="flex flex-col items-center justify-center">
                 <h3 className="text-6xl font-bebas opacity-65">404</h3>
                 <h4 className="text-4xl font-bebas opacity-50">No Data Found</h4>
-                <span className="text-lg font-nunito text-gray-500">Oops! No characters found for this keyword.</span>
-            </div>}
+                <span className="text-lg font-nunito text-gray-500">
+                  Oops! No characters found for this keyword.
+                </span>
+              </div>
+            )}
+          </div>
         </div>
-      </div>}
+      )}
 
-      {tab && tab == "locations" && <div className='wrapper flex flex-wrap flex-col items-center justify-center'>
-        <div className='w-full mt-5 flex flex-wrap items-center justify-center'>
-            <span className='w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize'>Showing {data.locations.length} out of {data.locationsInfo?.count} locations</span>
-            {data?.locations?.length>0 ? <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-6'>
-                {data?.locations?.map((item, index) => <LocationCard key={index} data={item} />)}
-            </div>: <div>
-                No data found for characters.
-            </div>}
+      {/* Locations */}
+      {tab === "locations" && (
+        <div className="wrapper flex flex-wrap flex-col items-center justify-center">
+          <div className="w-full mt-5 flex flex-wrap items-center justify-center">
+            <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
+              Showing {data.locations.length} out of {data.locationsInfo?.count} locations
+            </span>
+            {data?.locations?.length > 0 ? (<>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {data?.locations?.map((item, index) => (
+                  <LocationCard key={index} data={item} />
+                ))}
+              </div>
+              <div className="">
+                {data?.locationsInfo?.next && <button disabled={loading} onClick={handleLocationsLoadMore} className=' mt-10 disabled:cursor-not-allowed disabled:bg-blue-300 rounded-full px-7 bg-blue-400 text-white py-3 text-lg font-nunito cursor-pointer hover:bg-blue-500 transition-all duration-200 ease-in-out'>
+                    {!loading?"Load More":"Loading..."}
+                </button>}
+              </div>
+            </>) : (
+              <div>No data found for locations.</div>
+            )}
+          </div>
         </div>
-      </div>}
+      )}
 
-      {tab && tab == "episodes" && <div className='wrapper flex flex-wrap flex-col items-center justify-center'>
-        <div className='w-full mt-5 flex flex-wrap items-center justify-center'>
-            <span className='w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize'>Showing {data.episodes.length} out of {data.episodesInfo?.count} episodes</span>
-            {data?.episodes?.length>0 ? <div className='w-full grid grid-cols-1 md:grid-cols-2 gap-4'>
-                {data?.episodes?.map((item, index) => <EpisodeCard key={index} data={item} />)}
-            </div>: <div>
-                No data found for characters.
-            </div>}
+      {/* Episodes */}
+      {tab === "episodes" && (
+        <div className="wrapper flex flex-wrap flex-col items-center justify-center">
+          <div className="w-full mt-5 flex flex-wrap items-center justify-center">
+            <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
+              Showing {data.episodes.length} out of {data.episodesInfo?.count} episodes
+            </span>
+            {data?.episodes?.length > 0 ? (<>
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data?.episodes?.map((item, index) => (
+                    <EpisodeCard key={index} data={item} />
+                ))}
+              </div>
+              <div className="">
+                {data?.episodesInfo.next && <button disabled={loading} onClick={handleEpisodesLoadMore} className=' mt-10 disabled:cursor-not-allowed disabled:bg-blue-300 rounded-full px-7 bg-blue-400 text-white py-3 text-lg font-nunito cursor-pointer hover:bg-blue-500 transition-all duration-200 ease-in-out'>
+                    {!loading?"Load More":"Loading..."}
+                </button>}
+              </div>
+            </>) : (
+              <div>No data found for episodes.</div>
+            )}
+          </div>
         </div>
-      </div>}
+      )}
 
+      {/* Footer */}
       <footer className="w-full flex items-center justify-center border-t mt-10 bg-black">
         <div className="wrapper">
           <p className="text-center text-white py-5">
-            Made with ❤️ by{" "} Kanwaljeet Singh for {" "}
+            Made with ❤️ by Kanwaljeet Singh for{" "}
             <a
               href="https://tryft.co"
               target="_blank"
@@ -154,5 +194,5 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
