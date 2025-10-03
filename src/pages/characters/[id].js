@@ -30,7 +30,7 @@ export default function CharacterPage() {
 
   return (
     <div className="min-h-screen flex flex-col md:items-center md:justify-center relative">
-      <button onClick={()=> router.push({pathname:"/", query: {...router.query}}, undefined, {scroll: false})} className="md:absolute md:top-6 left-6 text-sm flex items-center gap-1 text-white rounded-full px-4 py-1 md:py-2 bg-blue-400 cursor-pointer w-fit ml-5 md:ml-0 my-4 md:my-0">
+      <button onClick={()=> router.push({pathname:"/", query: {...router.query}}, undefined, {scroll: false})} className="md:absolute md:top-6 left-6 text-sm flex items-center gap-1 text-white rounded-full px-4 py-2 bg-blue-400 cursor-pointer w-fit ml-5 md:ml-0 my-4 md:my-0">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         Go Back
       </button>
