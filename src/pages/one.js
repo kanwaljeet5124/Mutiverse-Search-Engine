@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Bebas_Neue, Nunito } from "next/font/google";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Banner from "@/modules/Banner";
 import CharacterSection from "@/modules/CharacterSection";
 import { useRouter } from "next/router";
