@@ -120,7 +120,7 @@ export default function Home() {
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-center sm:justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
-              Showing {data.characters.length} out of {data.charactersInfo?.count} characters
+              {!isCleared && `Showing ${data.characters.length} out of ${data.charactersInfo?.count} characters`}
             </span>
             {data?.characters?.length > 0 ? (<>
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -151,7 +151,7 @@ export default function Home() {
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
-              Showing {data.locations.length} out of {data.locationsInfo?.count} locations
+              {!isCleared && `Showing ${data.locations.length} out of ${data.locationsInfo?.count} locations`}
             </span>
             {data?.locations?.length > 0 ? (<>
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -182,7 +182,7 @@ export default function Home() {
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
-              Showing {data.episodes.length} out of {data.episodesInfo?.count} episodes
+              {!isCleared && `Showing ${data.episodes.length} out of ${data.episodesInfo?.count} episodes`}
             </span>
             {data?.episodes?.length > 0 ? (<>
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
