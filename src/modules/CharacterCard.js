@@ -1,6 +1,8 @@
+import { useRouter } from 'next/router';
 import React from 'react'
 
 export default function CharacterCard({data, key}) {
+    const router = useRouter();
     const statusChecker = {
         "Alive": "bg-green-500",
         "Dead": "bg-red-500",
@@ -8,7 +10,11 @@ export default function CharacterCard({data, key}) {
     };
 
     return (
-        <div className='bg-white rounded-lg shadow-2xl group overflow-hidden'>
+        <div className='bg-white rounded-lg shadow-2xl group overflow-hidden cursor-pointer' onClick={()=>router.push({
+                pathname: `/characters/${data.id}`,
+                query: {...router.query}
+            }, undefined, { scroll: false })  
+        }>
             {/* <div className='max-h-84 md:max-h-64 overflow-hidden'> */}
                 <img src={data.image??'/file.svg'} className='w-full rounded-t-lg'/>
             {/* </div> */}

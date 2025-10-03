@@ -116,7 +116,7 @@ export default function Home() {
       </div>
 
       {/* Characters */}
-      {!loading && tab === "characters" && (
+      {tab === "characters" && (
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-center sm:justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
@@ -128,11 +128,11 @@ export default function Home() {
                     <CharacterCard key={index} data={item} />
                 ))}
               </div>
-              <div className="">
+              {!loading && <div className="">
                 {data?.charactersInfo?.next && <button disabled={loading} onClick={handleCharacterLoadMore} className=' mt-10 disabled:cursor-not-allowed disabled:bg-blue-300 rounded-full px-7 bg-blue-400 text-white py-3 text-lg font-nunito cursor-pointer hover:bg-blue-500 transition-all duration-200 ease-in-out'>
-                    {!loading?"Load More":"Loading..."}
+                    {"Load More"}
                 </button>}
-              </div>
+              </div>}
             </>) : (
               <div className="flex flex-col items-center justify-center mt-8 mb-16 w-11/12 sm:w-11/12 md:w-8/12 lg:w-6/12">
                 <h3 className="text-6xl font-bebas opacity-65">{isCleared?"":"404"}</h3>
@@ -147,7 +147,7 @@ export default function Home() {
       )}
 
       {/* Locations */}
-      {!loading && tab === "locations" && (
+      {tab === "locations" && (
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
@@ -159,11 +159,11 @@ export default function Home() {
                   <LocationCard key={index} data={item} />
                 ))}
               </div>
-              <div className="">
+              {!loading && <div className="">
                 {data?.locationsInfo?.next && <button disabled={loading} onClick={handleLocationsLoadMore} className=' mt-10 disabled:cursor-not-allowed disabled:bg-blue-300 rounded-full px-7 bg-blue-400 text-white py-3 text-lg font-nunito cursor-pointer hover:bg-blue-500 transition-all duration-200 ease-in-out'>
-                    {!loading?"Load More":"Loading..."}
+                    {"Load More"}
                 </button>}
-              </div>
+              </div>}
             </>) : (
                 <div className="flex flex-col items-center justify-center mt-8 mb-16">
                     <h3 className="text-6xl font-bebas opacity-65">404</h3>
@@ -178,7 +178,7 @@ export default function Home() {
       )}
 
       {/* Episodes */}
-      {!loading && tab === "episodes" && (
+      {tab === "episodes" && (
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
@@ -190,11 +190,11 @@ export default function Home() {
                     <EpisodeCard key={index} data={item} />
                 ))}
               </div>
-              <div className="">
+              {!loading && <div className="">
                 {data?.episodesInfo.next && <button disabled={loading} onClick={handleEpisodesLoadMore} className=' mt-10 disabled:cursor-not-allowed disabled:bg-blue-300 rounded-full px-7 bg-blue-400 text-white py-3 text-lg font-nunito cursor-pointer hover:bg-blue-500 transition-all duration-200 ease-in-out'>
-                    {!loading?"Load More":"Loading..."}
+                    {"Load More"}
                 </button>}
-              </div>
+              </div>}
             </>) : (
                 <div className="flex flex-col items-center justify-center mt-8 mb-16">
                     <h3 className="text-6xl font-bebas opacity-65">404</h3>

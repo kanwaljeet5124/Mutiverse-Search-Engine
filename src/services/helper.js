@@ -1,14 +1,10 @@
 export const URL = "https://rickandmortyapi.com/api";
 
 export const responseValidator = async (response) => {
-  const res = await response.json().catch(() => ({}));
+  const res = await response.json().catch((e) => {console.log("No JSON response")});
 
   if (response.ok) {
-    return {
-      status: true,
-      data: res.results ?? res,
-      info: res.info || {},
-    };
+    return res
   }
 
   if (response.status === 401) {
