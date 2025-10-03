@@ -24,12 +24,13 @@ export default function Home() {
 
     const tab = useMemo(() => router.query.tab || "characters", [router.query.tab]);
 
-    const handleSearch = async (query, type,page=1) => {
+    const handleSearch = async (query, type,page=1, merge=true) => {
         if (!query || query.trim().length === 0) {
-        router.push(`/`, undefined, { scroll: false });
-        return;
+            router.push(`/`, undefined, { scroll: false });
+            return;
         }
-        await searchByType(query, type, page);
+
+        await searchByType(query, type, page, merge);
     };
 
     const getPageFromUrl = (url) => {
@@ -45,13 +46,15 @@ export default function Home() {
         handleSearch(router.query.keyword, "characters", nextPage); 
     }
     const handleLocationsLoadMore = async () => {
-        if (!data.charactersInfo?.next) return;
+        console.log("Locations Load More clicked");
+        if (!data.locationsInfo?.next) return;
         const nextPage = getPageFromUrl(data.locationsInfo.next);
         console.log("Next page:", nextPage);
         handleSearch(router.query.keyword, "locations", nextPage); 
     }
     const handleEpisodesLoadMore = async () => {
-        if (!data.charactersInfo?.next) return;
+        console.log("asdfasdf");
+        if (!data.episodesInfo?.next) return;
         const nextPage = getPageFromUrl(data.episodesInfo.next);
         console.log("Next page:", nextPage);
         handleSearch(router.query.keyword, "episodes", nextPage); 
@@ -59,9 +62,18 @@ export default function Home() {
 
     useEffect(() => {
         if (router.isReady && router.query.keyword) {
-            handleSearch(router.query.keyword, tab);
+            handleSearch(router.query.keyword, tab, false);
         }
-    }, [router.isReady, router.query.keyword, tab]);
+    }, [router.isReady, router.query.keyword]);
+
+    useEffect(() => {
+        if (router.isReady && router.query.keyword) {
+            if (tab === "characters" && data.characters.length > 0) return;
+            if (tab === "locations" && data.locations.length > 0) return;
+            if (tab === "episodes" && data.episodes.length > 0) return;
+            handleSearch(router.query.keyword, tab, true);
+        }
+    }, [router.isReady, tab]);
 
     console.log(data)
   return (
@@ -115,11 +127,11 @@ export default function Home() {
                 </button>}
               </div>
             </>) : (
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex flex-col items-center justify-center mt-8 mb-16">
                 <h3 className="text-6xl font-bebas opacity-65">404</h3>
                 <h4 className="text-4xl font-bebas opacity-50">No Data Found</h4>
                 <span className="text-lg font-nunito text-gray-500">
-                  Oops! No characters found for this keyword.
+                  Oops! No character found for this keyword.
                 </span>
               </div>
             )}
@@ -130,7 +142,7 @@ export default function Home() {
       {/* Locations */}
       {tab === "locations" && (
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
-          <div className="w-full mt-5 flex flex-wrap items-center justify-center">
+          <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
               Showing {data.locations.length} out of {data.locationsInfo?.count} locations
             </span>
@@ -146,7 +158,13 @@ export default function Home() {
                 </button>}
               </div>
             </>) : (
-              <div>No data found for locations.</div>
+                <div className="flex flex-col items-center justify-center mt-8 mb-16">
+                    <h3 className="text-6xl font-bebas opacity-65">404</h3>
+                    <h4 className="text-4xl font-bebas opacity-50">No Data Found</h4>
+                    <span className="text-lg font-nunito text-gray-500">
+                    Oops! No location found for this keyword.
+                    </span>
+                </div>
             )}
           </div>
         </div>
@@ -155,7 +173,7 @@ export default function Home() {
       {/* Episodes */}
       {tab === "episodes" && (
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
-          <div className="w-full mt-5 flex flex-wrap items-center justify-center">
+          <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
               Showing {data.episodes.length} out of {data.episodesInfo?.count} episodes
             </span>
@@ -171,8 +189,13 @@ export default function Home() {
                 </button>}
               </div>
             </>) : (
-              <div>No data found for episodes.</div>
-            )}
+                <div className="flex flex-col items-center justify-center mt-8 mb-16">
+                    <h3 className="text-6xl font-bebas opacity-65">404</h3>
+                    <h4 className="text-4xl font-bebas opacity-50">No Data Found</h4>
+                    <span className="text-lg font-nunito text-gray-500">
+                        Oops! No episode found for this keyword.
+                    </span>
+                </div>)}
           </div>
         </div>
       )}

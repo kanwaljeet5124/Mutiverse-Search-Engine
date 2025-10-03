@@ -62,7 +62,7 @@ export default function useSearch() {
     }
   };
 
-  const searchByType = async (query, type, page) => {
+  const searchByType = async (query, type, page, merge) => {
     setLoading(true);
 
     try {
@@ -84,7 +84,7 @@ export default function useSearch() {
           if (response.status) {
             setData((prev) => ({
               ...prev,
-              locations: response.data,
+              locations: [...data.locations, ...response.data],
               locationsInfo: response.info,
             }));
           }
@@ -95,7 +95,7 @@ export default function useSearch() {
           if (response.status) {
             setData((prev) => ({
               ...prev,
-              episodes: response.data,
+              episodes: [...data.episodes,...response.data],
               episodesInfo: response.info,
             }));
           }
