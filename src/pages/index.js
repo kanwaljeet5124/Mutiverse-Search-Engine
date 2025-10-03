@@ -244,7 +244,7 @@ export default function Home() {
           <p className="text-center text-white py-5">
             Made with ❤️ by Kanwaljeet Singh for{" "}
             <a
-              href="https://tryft.co"
+              href="https://www.tryft.io/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#eb6744] hover:underline"
