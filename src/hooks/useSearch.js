@@ -8,6 +8,9 @@ export default function useSearch() {
     characters: [],
     locations: [],
     episodes: [],
+    charactersInfo: {},
+    locationsInfo: {},
+    episodesInfo: {}
   });
 
   const searchInMetaverse = async (query) => {
@@ -25,22 +28,28 @@ export default function useSearch() {
         characters: [],
         locations: [],
         episodes: [],
+        charactersInfo: {},
+        locationsInfo: {},
+        episodesInfo: {}
       };
 
       if (characters.status === "fulfilled" && characters.value.status) {
         newData.characters = characters.value.data;
+        newData.charactersInfo = characters.value.info;
       } else {
         errorMessage(characters.reason?.message || "No data found for characters.");
       }
 
       if (locations.status === "fulfilled" && locations.value.status) {
         newData.locations = locations.value.data;
+        newData.locationsInfo = locations.value.info;
       } else {
         errorMessage(locations.reason?.message || "No data found for locations.");
       }
 
       if (episodes.status === "fulfilled" && episodes.value.status) {
         newData.episodes = episodes.value.data;
+        newData.episodesInfo = episodes.value.info;
       } else {
         errorMessage(episodes.reason?.message || "No data found for episodes.");
       }

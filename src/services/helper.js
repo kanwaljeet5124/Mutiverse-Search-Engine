@@ -7,6 +7,7 @@ export const responseValidator = async (response) => {
     return {
       status: true,
       data: res.results ?? res,
+      info: res.info || {},
     };
   }
 

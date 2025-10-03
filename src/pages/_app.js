@@ -3,7 +3,7 @@ import { Toaster } from "sonner";
 
 export default function App({ Component, pageProps }) {
   return <>
-      <Component {...pageProps} />;
-      <Toaster position="top-right" richColors={true} />
+      <Component {...pageProps} />
+      <Toaster position="top-right" richColors={true} expand={true} gap={5} />
     </>
 }

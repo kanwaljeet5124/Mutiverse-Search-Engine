@@ -10,7 +10,7 @@ export const successMessage = (message) => {
 }
 export const errorMessage = (message) => {
     toast.error(`${message}`,{
-        id: 'error-1',
+        id: `error-${Math.random() * 1000}`,
     })
 }
 export const infoMessage = (message) => {

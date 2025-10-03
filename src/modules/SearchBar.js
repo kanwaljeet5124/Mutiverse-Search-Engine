@@ -14,7 +14,14 @@ export default function SearchBar() {
             router.push(`/`, undefined, { scroll: false });
         }
         else{
-            router.push(`/?keyword=${query}`, undefined, { scroll: false });
+            router.push(
+                {
+                  pathname: router.pathname,
+                  query: { ...router.query, keyword:query },
+                },
+                undefined,
+                { scroll: false }
+            )
         }
         // const response = await searchCharacters(keyword);
         // console.log("Search response:", response);
