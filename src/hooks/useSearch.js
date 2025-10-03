@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function useSearch() {
   const [loading, setLoading] = useState(false);
+  const [isCleared, setIsCleared] = useState(false);
   const [data, setData] = useState({
     characters: [],
     locations: [],
@@ -64,6 +65,7 @@ export default function useSearch() {
 
   const searchByType = async (query, type, page=1, merge=true) => {
     setLoading(true);
+    setIsCleared(false);
     console.log("Search by type:", query, type, page, merge);
     try {
       let response;
@@ -157,6 +159,17 @@ export default function useSearch() {
     }
   };
 
+  const clearResults = async () => {
+    setData({
+      characters: [],
+      locations: [],
+      episodes: [],
+      charactersInfo: {},
+      locationsInfo: {},
+      episodesInfo: {}
+    });
+    setIsCleared(true)
+  }
 
-  return { loading, data, searchInMetaverse,searchByType };
+  return { loading, data,isCleared, searchInMetaverse,searchByType, clearResults };
 }

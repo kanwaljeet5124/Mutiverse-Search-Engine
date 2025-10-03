@@ -8,8 +8,10 @@ export default function CharacterCard({data, key}) {
     };
 
     return (
-        <div className='bg-white rounded-lg shadow-2xl'>
-            <img src={data.image??'/file.svg'} className='w-full rounded-t-lg'/>
+        <div className='bg-white rounded-lg shadow-2xl group overflow-hidden'>
+            {/* <div className='max-h-84 md:max-h-64 overflow-hidden'> */}
+                <img src={data.image??'/file.svg'} className='w-full rounded-t-lg'/>
+            {/* </div> */}
             <div className='p-5 capitalize'>
                 <h3 className='text-xl font-bold text-black'>{data.name}</h3>
                 <div className='w-full flex items-center gap-2'>

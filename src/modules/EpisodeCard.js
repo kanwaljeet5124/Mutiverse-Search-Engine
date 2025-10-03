@@ -2,7 +2,7 @@ import React from "react";
 
 export default function EpisodeCard({ data }) {
   return (
-    <div className="bg-white rounded-lg shadow-xl p-5">
+    <div className="bg-white rounded-lg shadow-xl p-5 hover:bg-[#f3f3f3] ease-linear duration-300 transition-all">
       <h3 className="text-2xl font-bold text-black mb-2">{data.name}</h3>
       <div className="text-gray-600 space-y-1">
         <p>
