@@ -120,7 +120,7 @@ export default function Home() {
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
             <span className="w-full flex items-center justify-center sm:justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
-              {!isCleared && `Showing ${data.characters.length} out of ${data.charactersInfo?.count} characters`}
+              {!isCleared && `Showing ${data?.characters?.length || 0} out of ${data.charactersInfo?.count || 0} characters`}
             </span>
             {data?.characters?.length > 0 ? (<>
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -133,15 +133,14 @@ export default function Home() {
                     {"Load More"}
                 </button>}
               </div>}
-            </>) : (
-              <div className="flex flex-col items-center justify-center mt-8 mb-16 w-11/12 sm:w-11/12 md:w-8/12 lg:w-6/12">
+            </>) : !loading && <div className="flex flex-col items-center justify-center mt-8 mb-16 w-11/12 sm:w-11/12 md:w-8/12 lg:w-6/12">
                 <h3 className="text-6xl font-bebas opacity-65">{isCleared?"":"404"}</h3>
-                <h4 className="text-4xl font-bebas opacity-50">{isCleared?"Explore the Metaverse!":"No Data Found"}</h4>
+                <h4 className="text-4xl font-bebas opacity-50">{isCleared?"Explore the Multiverse!":"No Data Found"}</h4>
                 <span className="text-lg font-nunito text-gray-500 text-center">
                   {isCleared?"Try some keyword and explore your favorite characters,locations, and episodes":"Oops! No character found for this keyword."}
                 </span>
               </div>
-            )}
+            }
           </div>
         </div>
       )}
@@ -150,8 +149,8 @@ export default function Home() {
       {tab === "locations" && (
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
-            <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
-              {!isCleared && `Showing ${data.locations.length} out of ${data.locationsInfo?.count} locations`}
+            <span className="w-full flex items-center justify-center sm:justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
+              {!isCleared && `Showing ${data?.locations?.length || 0} out of ${data.locationsInfo?.count || 0} locations`}
             </span>
             {data?.locations?.length > 0 ? (<>
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -164,15 +163,14 @@ export default function Home() {
                     {"Load More"}
                 </button>}
               </div>}
-            </>) : (
-                <div className="flex flex-col items-center justify-center mt-8 mb-16 w-11/12 sm:w-11/12 md:w-8/12 lg:w-6/12">
+            </>) : !loading && <div className="flex flex-col items-center justify-center mt-8 mb-16 w-11/12 sm:w-11/12 md:w-8/12 lg:w-6/12">
                     <h3 className="text-6xl font-bebas opacity-65">{isCleared?"":"404"}</h3>
-                    <h4 className="text-4xl font-bebas opacity-50">{isCleared?"Explore the Metaverse!":"No Data Found"}</h4>
+                    <h4 className="text-4xl font-bebas opacity-50">{isCleared?"Explore the Multiverse!":"No Data Found"}</h4>
                     <span className="text-lg font-nunito text-gray-500 text-center">
                     {isCleared?"Try some keyword and explore your favorite characters,locations, and episodes":"Oops! No character found for this keyword."}
                     </span>
                 </div>
-            )}
+            }
           </div>
         </div>
       )}
@@ -181,8 +179,8 @@ export default function Home() {
       {tab === "episodes" && (
         <div className="wrapper flex flex-wrap flex-col items-center justify-center">
           <div className="w-full flex flex-wrap items-center justify-center">
-            <span className="w-full flex items-center justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
-              {!isCleared && `Showing ${data.episodes.length} out of ${data.episodesInfo?.count} episodes`}
+            <span className="w-full flex items-center justify-center sm:justify-end text-base text-gray-500 font-semibold font-nunito my-5 capitalize">
+              {!isCleared && `Showing ${data?.episodes?.length || 0} out of ${data?.episodesInfo?.count || 0} episodes`}
             </span>
             {data?.episodes?.length > 0 ? (<>
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -195,14 +193,13 @@ export default function Home() {
                     {"Load More"}
                 </button>}
               </div>}
-            </>) : (
-                <div className="flex flex-col items-center justify-center mt-8 mb-16 w-11/12 sm:w-11/12 md:w-8/12 lg:w-6/12">
+            </>) : !loading && <div className="flex flex-col items-center justify-center mt-8 mb-16 w-11/12 sm:w-11/12 md:w-8/12 lg:w-6/12">
                     <h3 className="text-6xl font-bebas opacity-65">{isCleared?"":"404"}</h3>
-                    <h4 className="text-4xl font-bebas opacity-50">{isCleared?"Explore the Metaverse!":"No Data Found"}</h4>
+                    <h4 className="text-4xl font-bebas opacity-50">{isCleared?"Explore the Multiverse!":"No Data Found"}</h4>
                     <span className="text-lg font-nunito text-gray-500 text-center">
                     {isCleared?"Try some keyword and explore your favorite characters,locations, and episodes":"Oops! No character found for this keyword."}
                     </span>
-                </div>)}
+                </div>}
             </div>
         </div>
       )}

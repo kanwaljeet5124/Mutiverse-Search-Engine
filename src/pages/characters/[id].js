@@ -29,8 +29,8 @@ export default function CharacterPage() {
   }, [id]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative">
-      <button onClick={()=> router.push({pathname:"/", query: {...router.query}}, undefined, {scroll: false})} className="top-6 left-6 text-sm flex items-center gap-1 text-white rounded-full absolute px-4 py-2 bg-blue-400 cursor-pointer">
+    <div className="min-h-screen flex flex-col md:items-center md:justify-center relative">
+      <button onClick={()=> router.push({pathname:"/", query: {...router.query}}, undefined, {scroll: false})} className="md:absolute md:top-6 left-6 text-sm flex items-center gap-1 text-white rounded-full px-4 py-1 md:py-2 bg-blue-400 cursor-pointer w-fit ml-5 md:ml-0 my-4 md:my-0">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-icon lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         Go Back
       </button>
@@ -41,11 +41,11 @@ export default function CharacterPage() {
             src={character.image}
             alt={character.name}
             fill
-            className="w-full rounded-l-2xl"
+            className="w-full rounded-t-2xl md:rounded-r-none"
           />
         </div>
 
-        <div className="flex-1 px-6 pt-6 md:px-10 md:pt-10 pb-0 flex flex-col gap-2 bg-zinc-100 shadow-2xl rounded-r-2xl">
+        <div className="flex-1 p-6 md:p-10 flex flex-col gap-2 bg-zinc-100 shadow-2xl rounded-r-2xl">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 ">
             {character.name}
           </h1>
