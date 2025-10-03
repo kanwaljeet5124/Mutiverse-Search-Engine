@@ -62,9 +62,9 @@ export default function useSearch() {
     }
   };
 
-  const searchByType = async (query, type, page, merge) => {
+  const searchByType = async (query, type, page=1, merge=true) => {
     setLoading(true);
-
+    console.log("Search by type:", query, type, page, merge);
     try {
       let response;
       switch (type) {
@@ -73,19 +73,50 @@ export default function useSearch() {
           if (response.status) {
             setData((prev) => ({
               ...prev,
-              characters: [...data.characters, ...response.data],
+              characters: merge?[...data.characters, ...response.data]:response.data,
               charactersInfo: response.info,
+              locations:merge?data.locations:[],
+              locationsInfo:merge?data.locationsInfo:{},
+              episodes:merge?data.episodes:[],
+              episodesInfo:merge?data.episodesInfo:{} 
+            }));
+          }
+          else{
+            setData((prev) => ({
+              ...prev,
+              characters: [],
+              charactersInfo: response.info,
+              locations:merge?data.locations:[],
+              locationsInfo:merge?data.locationsInfo:{},
+              episodes:merge?data.episodes:[],
+              episodesInfo:merge?data.episodesInfo:{} 
             }));
           }
           break;
 
         case "locations":
           response = await searchLocation(query, page);
+          console.log("Locations response:", response);
           if (response.status) {
             setData((prev) => ({
               ...prev,
-              locations: [...data.locations, ...response.data],
+              locations: merge?[...data.locations, ...response.data]:response.data,
               locationsInfo: response.info,
+              characters:merge?data.characters:[],
+              charactersInfo: merge?data.charactersInfo:{},
+              episodes:merge?data.episodes:[],
+              episodesInfo: merge?data.episodesInfo:{}
+            }));
+          }
+          else{
+            setData((prev) => ({
+              ...prev,
+              locations: [],
+              locationsInfo: response.info,
+              characters:merge?data.characters:[],
+              charactersInfo: merge?data.charactersInfo:{},
+              episodes:merge?data.episodes:[],
+              episodesInfo: merge?data.episodesInfo:{}
             }));
           }
           break;
@@ -95,8 +126,23 @@ export default function useSearch() {
           if (response.status) {
             setData((prev) => ({
               ...prev,
-              episodes: [...data.episodes,...response.data],
+              episodes: merge?[...data.episodes,...response.data]:response.data,
               episodesInfo: response.info,
+              characters:merge?data.characters:[],
+              charactersInfo:merge?data.charactersInfo:{},
+              locations:merge?data.locations:[],
+              locationsInfo: merge?data.locationsInfo:{}
+            }));
+          }
+          else{
+            setData((prev) => ({
+              ...prev,
+              episodes: [],
+              episodesInfo: response.info,
+              characters:merge?data.characters:[],
+              charactersInfo:merge?data.charactersInfo:{},
+              locations:merge?data.locations:[],
+              locationsInfo: merge?data.locationsInfo:{}
             }));
           }
           break;

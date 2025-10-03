@@ -24,7 +24,7 @@ export default function Home() {
 
     const tab = useMemo(() => router.query.tab || "characters", [router.query.tab]);
 
-    const handleSearch = async (query, type,page=1, merge=true) => {
+    const handleSearch = async (query, type,page=1, merge) => {
         if (!query || query.trim().length === 0) {
             router.push(`/`, undefined, { scroll: false });
             return;
@@ -62,7 +62,7 @@ export default function Home() {
 
     useEffect(() => {
         if (router.isReady && router.query.keyword) {
-            handleSearch(router.query.keyword, tab, false);
+            handleSearch(router.query.keyword, tab,1, false);
         }
     }, [router.isReady, router.query.keyword]);
 
@@ -71,7 +71,7 @@ export default function Home() {
             if (tab === "characters" && data.characters.length > 0) return;
             if (tab === "locations" && data.locations.length > 0) return;
             if (tab === "episodes" && data.episodes.length > 0) return;
-            handleSearch(router.query.keyword, tab, true);
+            handleSearch(router.query.keyword, tab,1, true);
         }
     }, [router.isReady, tab]);
 
@@ -116,7 +116,7 @@ export default function Home() {
               Showing {data.characters.length} out of {data.charactersInfo?.count} characters
             </span>
             {data?.characters?.length > 0 ? (<>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {data?.characters?.map((item, index) => (
                     <CharacterCard key={index} data={item} />
                 ))}
@@ -147,7 +147,7 @@ export default function Home() {
               Showing {data.locations.length} out of {data.locationsInfo?.count} locations
             </span>
             {data?.locations?.length > 0 ? (<>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {data?.locations?.map((item, index) => (
                   <LocationCard key={index} data={item} />
                 ))}

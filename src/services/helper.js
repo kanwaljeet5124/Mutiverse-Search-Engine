@@ -31,5 +31,5 @@ export const responseValidator = async (response) => {
 };
 
 export const apiError = (e) => {
-  return { status: false, message: "Network error: please refresh the page." };
+  return { status: false, message: e.message || "Network error: please refresh the page." };
 };
