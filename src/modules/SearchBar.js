@@ -2,11 +2,13 @@ import Search from '@/Icons/Search'
 import { searchCharacters } from '@/services/apis/search.service';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react'
+import Shortcuts from './Shortcuts';
 
 export default function SearchBar() {
     const [query, setQuery] = useState("");
     const router = useRouter();
 
+    const SHORT_VALUES = ["Rick", "Max", "To"];
     const handleSearch = async (e) => {
         e.preventDefault();
         // console.log("Search submitted:", query);
@@ -26,6 +28,18 @@ export default function SearchBar() {
         // const response = await searchCharacters(keyword);
         // console.log("Search response:", response);
     }
+
+    const handleShortcuts = (value) => {
+        setQuery(value);
+        router.push(
+            {
+                pathname: router.pathname,
+                query: { ...router.query, keyword:value },
+            },
+            undefined,
+            { scroll: false }
+        )
+    } 
 
     // Debounced search code starts here This will be usefull if do not require the search button because it will search automatically after 500ms of user stop typing
     // useEffect(() => {
@@ -54,6 +68,8 @@ export default function SearchBar() {
             <input type="text" value={query} onChange={(e)=> setQuery(e.target.value)} placeholder='Search characters, locations, or episodes...' className='text-base sm:text-lg md:text-xl bg-transparent outline-none p-2.5 w-4/5'/>
             <button onClick={handleSearch} className='rounded-full px-4 sm:px-7 bg-blue-400 text-white py-3 text-base sm:text-lg md:text-xl cursor-pointer hover:bg-blue-500 transition-all duration-200 ease-in-out'>Search</button>
         </form>
+
+        <Shortcuts arr={SHORT_VALUES} handler={handleShortcuts} />
     </>
   )
 }

@@ -27,20 +27,20 @@ export default function Home() {
     const keyword = useMemo(() => router.query.keyword || "", [router.query.keyword]);
 
     const handleSearch = async (query, type,page=1, merge) => {
-        console.log("Handle initiated for:", { query, type, page, merge });
-        if (!query || query.trim().length === 0) {
-            await clearResults()
-            router.push(`/`, undefined, { scroll: false });
-            return;
-        }
+      console.log("Handle initiated for:", { query, type, page, merge });
+      if (!query || query.trim().length === 0) {
+        await clearResults()
+        router.push(`/`, undefined, { scroll: false });
+        return;
+      }
 
-        await searchByType(query, type, page, merge);
+      await searchByType(query, type, page, merge);
     };
 
     const getPageFromUrl = (url) => {
-        if (!url) return null;
-        const params = new URL(url).searchParams;
-        return params.get("page");
+    if (!url) return null;
+      const params = new URL(url).searchParams;
+      return params.get("page");
     };
 
     const handleCharacterLoadMore = async () => {

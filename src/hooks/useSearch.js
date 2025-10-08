@@ -14,6 +14,32 @@ export default function useSearch() {
     episodesInfo: {}
   });
 
+  const storeInLocalStorage = (key, value) => {
+    try{
+      if(window){
+        window.localStorage.setItem(key, JSON.stringify(value));  
+      }
+    }
+    catch(e){
+      console.log("Error while storing data in LS.");
+    }
+  } 
+
+  const checkLocal = (key) => {
+    try{
+      if(window && query.length>0){
+        const LD = window.localStorage.getItem(key);
+        return LD ? JSON.parse(LD) : null;
+      }
+    }
+    catch(e){
+      console.log("Error while reading data from LS.")
+    }
+    return null;
+  }
+
+  const generateCacheKey = (tab, query, page) => `${tab}_${query}_${page}`;
+
   const searchInMetaverse = async (query) => {
     setLoading(true);
 
@@ -55,6 +81,7 @@ export default function useSearch() {
         errorMessage(episodes.reason?.message || "No data found for episodes.");
       }
 
+      
       setData(newData);
     } catch (err) {
       errorMessage(err.message || "Something went wrong while searching.");
@@ -64,15 +91,41 @@ export default function useSearch() {
   };
 
   const searchByType = async (query, type, page=1, merge=true) => {
+    const cacheKey = generateCacheKey(type, query, page);
+    const cacheData = checkLocal(cacheKey);
+
+    if(cacheData){
+      console.log("Data get from cache against the key = ", cacheKey);
+      setData((prev) => ({...prev, ...cacheData}));
+    }
+
     setLoading(true);
     setIsCleared(false);
-    console.log("Search by type:", query, type, page, merge);
     try {
       let response;
       switch (type) {
         case "characters":
+          console.log("Called!")
+          const res = checkLocal("characters", query, page)
           response = await searchCharacters(query, page);
           if (response.status) {
+            const SD = JSON.stringify({
+              query,
+              page,
+              tab: "characters",
+              data: {
+                ...data,
+                characters: merge?[...data.characters, ...response.data]:response.data,
+                charactersInfo: response.info,
+                locations:merge?data.locations:[],
+                locationsInfo:merge?data.locationsInfo:{},
+                episodes:merge?data.episodes:[],
+                episodesInfo:merge?data.episodesInfo:{} 
+              }
+            });
+
+            storeInLocalStorage(query, SD)
+
             setData((prev) => ({
               ...prev,
               characters: merge?[...data.characters, ...response.data]:response.data,
@@ -100,6 +153,15 @@ export default function useSearch() {
           response = await searchLocation(query, page);
           console.log("Locations response:", response);
           if (response.status) {
+            storeInLocalStorage(query, {
+              ...data,
+              locations: merge?[...data.locations, ...response.data]:response.data,
+              locationsInfo: response.info,
+              characters:merge?data.characters:[],
+              charactersInfo: merge?data.charactersInfo:{},
+              episodes:merge?data.episodes:[],
+              episodesInfo: merge?data.episodesInfo:{}
+            });
             setData((prev) => ({
               ...prev,
               locations: merge?[...data.locations, ...response.data]:response.data,
