@@ -17,7 +17,11 @@ export default function useSearch() {
   const storeInLocalStorage = (key, value) => {
     try{
       if(window){
-        window.localStorage.setItem(key, JSON.stringify(value));  
+        const item = {
+          data: value,
+          timestamp: Date.now()
+        };
+        window.localStorage.setItem(key, JSON.stringify(item));  
       }
     }
     catch(e){
@@ -28,8 +32,21 @@ export default function useSearch() {
   const checkLocal = (key) => {
     try{
       if(window && key.length>0){
-        const LD = window.localStorage.getItem(key);
-        return LD ? JSON.parse(LD) : null;
+
+        const LD = localStorage.getItem(key);
+        if (!LD) return null;
+
+        const parsed = JSON.parse(LD);
+        const now = Date.now();
+        const THIRTY_MINUTES = 30 * 60 * 1000;
+
+        if (now - parsed.timestamp > THIRTY_MINUTES) {
+          localStorage.removeItem(key);
+          console.log(`Cache expired for key: ${key}`);
+          return null;
+        }
+
+        return parsed.data;
       }
     }
     catch(e){
