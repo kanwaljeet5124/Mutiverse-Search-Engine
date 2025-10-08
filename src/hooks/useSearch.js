@@ -27,12 +27,13 @@ export default function useSearch() {
 
   const checkLocal = (key) => {
     try{
-      if(window && query.length>0){
+      if(window && key.length>0){
         const LD = window.localStorage.getItem(key);
         return LD ? JSON.parse(LD) : null;
       }
     }
     catch(e){
+      console.log("Read error:", e)
       console.log("Error while reading data from LS.")
     }
     return null;
@@ -94,9 +95,11 @@ export default function useSearch() {
     const cacheKey = generateCacheKey(type, query, page);
     const cacheData = checkLocal(cacheKey);
 
+    console.log(cacheData);
     if(cacheData){
       console.log("Data get from cache against the key = ", cacheKey);
       setData((prev) => ({...prev, ...cacheData}));
+      return;
     }
 
     setLoading(true);
@@ -109,22 +112,15 @@ export default function useSearch() {
           const res = checkLocal("characters", query, page)
           response = await searchCharacters(query, page);
           if (response.status) {
-            const SD = JSON.stringify({
-              query,
-              page,
-              tab: "characters",
-              data: {
-                ...data,
-                characters: merge?[...data.characters, ...response.data]:response.data,
-                charactersInfo: response.info,
-                locations:merge?data.locations:[],
-                locationsInfo:merge?data.locationsInfo:{},
-                episodes:merge?data.episodes:[],
-                episodesInfo:merge?data.episodesInfo:{} 
-              }
+            storeInLocalStorage(cacheKey, {
+              ...data,
+              characters: merge?[...data.characters, ...response.data]:response.data,
+              charactersInfo: response.info,
+              locations:merge?data.locations:[],
+              locationsInfo:merge?data.locationsInfo:{},
+              episodes:merge?data.episodes:[],
+              episodesInfo:merge?data.episodesInfo:{} 
             });
-
-            storeInLocalStorage(query, SD)
 
             setData((prev) => ({
               ...prev,
@@ -153,7 +149,7 @@ export default function useSearch() {
           response = await searchLocation(query, page);
           console.log("Locations response:", response);
           if (response.status) {
-            storeInLocalStorage(query, {
+            storeInLocalStorage(cacheKey, {
               ...data,
               locations: merge?[...data.locations, ...response.data]:response.data,
               locationsInfo: response.info,
@@ -162,6 +158,7 @@ export default function useSearch() {
               episodes:merge?data.episodes:[],
               episodesInfo: merge?data.episodesInfo:{}
             });
+
             setData((prev) => ({
               ...prev,
               locations: merge?[...data.locations, ...response.data]:response.data,
@@ -188,6 +185,16 @@ export default function useSearch() {
         case "episodes":
           response = await searchEpisodes(query, page);
           if (response.status) {
+            storeInLocalStorage(cacheKey, {
+              ...data,
+              episodes: merge?[...data.episodes,...response.data]:response.data,
+              episodesInfo: response.info,
+              characters:merge?data.characters:[],
+              charactersInfo:merge?data.charactersInfo:{},
+              locations:merge?data.locations:[],
+              locationsInfo: merge?data.locationsInfo:{}
+            });
+
             setData((prev) => ({
               ...prev,
               episodes: merge?[...data.episodes,...response.data]:response.data,
